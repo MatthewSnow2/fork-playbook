@@ -12,8 +12,9 @@ This is **Dr. Lutfiya Miller's AI Consulting Playbook** - an interactive learnin
 - `npm install` - Install dependencies
 - `npm run dev` - Start development server on http://localhost:3000
 - `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
-- `npm run deploy` - Build and deploy to Cloudflare Pages
+- `npm run preview` - Preview production build locally (uses wrangler pages dev)
+- `npm run deploy` - Build and deploy to Cloudflare Pages (runs build + wrangler pages deploy)
+- `npm run cf-typegen` - Generate Cloudflare TypeScript types
 
 ### Process Management (PM2)
 - `pm2 start ecosystem.config.cjs` - Start the application
@@ -24,11 +25,13 @@ This is **Dr. Lutfiya Miller's AI Consulting Playbook** - an interactive learnin
 ## Architecture Overview
 
 ### Tech Stack
-- **Frontend**: React 18 + TypeScript + Vite
-- **Styling**: Tailwind CSS with custom theme (navy/silver palette)
+- **Frontend**: React 19 + TypeScript + Vite 6
+- **Styling**: Tailwind CSS 3.4 with custom theme (navy/silver palette)
 - **State Management**: React hooks + LocalStorage
-- **Deployment**: Cloudflare Pages + PM2 for local hosting
+- **Backend**: Hono framework (minimal setup)
+- **Deployment**: Cloudflare Pages (wrangler) + PM2 for local hosting
 - **Content**: Markdown-style formatting in JavaScript modules
+- **Build Tools**: Vite with React plugin, PostCSS, Autoprefixer
 
 ### Core Data Flow
 1. Chapter metadata defined in `src/data/chapters.js` (titles, overviews, exercises, quizzes)
@@ -144,14 +147,17 @@ export const fullChapterContent = {
 ## Deployment
 
 ### Local Hosting
-- Uses PM2 for process management
+- Uses PM2 for process management (`ecosystem.config.cjs`)
 - Serves on port 3000 with host 0.0.0.0
-- Configuration in `ecosystem.config.cjs`
+- Command: `pm2 start ecosystem.config.cjs`
+- Preview mode runs via `npx vite preview --host 0.0.0.0 --port 3000`
 
 ### Cloudflare Pages
 - Configuration in `wrangler.jsonc`
 - Build output in `./dist`
+- Uses wrangler pages for deployment and local preview
 - Supports nodejs compatibility flags
+- Vite config includes allowed hosts for sandbox deployment
 
 ## Future Enhancements
 
@@ -192,5 +198,5 @@ export const fullChapterContent = {
 
 **Repository**: https://github.com/Drfiya/Playbook  
 **Maintainer**: Dr. Lutfiya Miller, Ph.D., DABT  
-**Framework**: React 18 + Vite + Tailwind CSS  
+**Framework**: React 19 + Vite 6 + Tailwind CSS 3.4  
 **Last Updated**: November 2025
