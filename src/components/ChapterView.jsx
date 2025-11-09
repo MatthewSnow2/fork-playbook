@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getChapterProgress, updateChapterProgress } from '../data/chapters';
 import fullChapterContent from '../data/fullChapters';
 import ChapterContent from './ChapterContent';
+import LoomVideoPlayer from './LoomVideoPlayer';
 
 const ChapterView = ({ chapter, onComplete, onBack }) => {
   const [progress, setProgress] = useState(getChapterProgress(chapter.id));
@@ -262,6 +263,28 @@ const ChapterView = ({ chapter, onComplete, onBack }) => {
           <p className="text-silver-700 leading-relaxed">{chapter.overview}</p>
         </div>
 
+        {/* Chapter Video */}
+        {chapter.videoUrl && (
+          <div className="card mb-8">
+            <h3 className="text-xl font-bold text-navy-800 mb-6">
+              <i className="fas fa-video mr-2"></i>
+              Chapter Walkthrough
+            </h3>
+            <LoomVideoPlayer 
+              videoUrl={chapter.videoUrl}
+              title={`Chapter ${chapter.number}: ${chapter.title}`}
+              onVideoWatched={() => {
+                const newProgress = {
+                  ...progress,
+                  videoWatched: true
+                };
+                setProgress(newProgress);
+                updateChapterProgress(chapter.id, newProgress);
+              }}
+            />
+          </div>
+        )}
+
         {/* Sections */}
         <div className="card mb-8">
           <h3 className="text-xl font-bold text-navy-800 mb-6">Chapter Content</h3>
@@ -419,6 +442,25 @@ const ChapterView = ({ chapter, onComplete, onBack }) => {
           </h3>
           
           <div className="space-y-3">
+            {/* Video Progress */}
+            {chapter.videoUrl && (
+              <div className="flex items-center justify-between p-3 bg-white rounded-lg">
+                <div className="flex items-center">
+                  <i className={`fas fa-video mr-3 ${
+                    progress.videoWatched ? 'text-green-500' : 'text-silver-400'
+                  }`}></i>
+                  <span className="font-medium">Watch Chapter Video</span>
+                </div>
+                <div className="flex items-center">
+                  {progress.videoWatched ? (
+                    <i className="fas fa-check-circle text-green-500"></i>
+                  ) : (
+                    <i className="fas fa-circle text-silver-300"></i>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Sections Progress */}
             <div className="flex items-center justify-between p-3 bg-white rounded-lg">
               <div className="flex items-center">

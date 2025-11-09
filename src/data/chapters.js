@@ -8,6 +8,7 @@ export const chaptersData = [
     icon: "fa-compass",
     color: "from-navy-700 to-navy-500",
     duration: "45 min",
+    videoUrl: "https://www.loom.com/share/b44905d90bee4eea9194a5da81e38a11",
     keyTakeaways: [
       "The $30,000 Misunderstanding - Why saying 'no' builds trust",
       "AI is a luxury, not a right - The positioning that wins",
