@@ -118,6 +118,13 @@ const ChapterView = ({ chapter, onComplete, onBack }) => {
     }
   };
 
+  const startQuiz = () => {
+    // Reset quiz state for fresh start (important for retakes)
+    setQuizAnswers({});
+    setShowResults(false);
+    setShowQuiz(true);
+  };
+
   if (showQuiz) {
     return (
       <div className="p-8 max-w-4xl mx-auto">
@@ -177,9 +184,16 @@ const ChapterView = ({ chapter, onComplete, onBack }) => {
                 </div>
               ))}
 
-              <button onClick={() => setShowQuiz(false)} className="btn-secondary">
-                Back to Chapter
-              </button>
+              <div className="flex space-x-4">
+                <button onClick={startQuiz} className="btn-primary flex-1">
+                  <i className="fas fa-redo mr-2"></i>
+                  Retake Quiz
+                </button>
+                <button onClick={() => setShowQuiz(false)} className="btn-secondary flex-1">
+                  <i className="fas fa-arrow-left mr-2"></i>
+                  Back to Chapter
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -562,7 +576,7 @@ const ChapterView = ({ chapter, onComplete, onBack }) => {
         {/* Action Buttons */}
         <div className="flex space-x-4">
           {chapter.quiz && progress.sectionsRead.length === (fullChapterContent[chapter.id]?.sections || chapter.sections).length && !progress.completed && (
-            <button onClick={() => setShowQuiz(true)} className="btn-primary flex-1">
+            <button onClick={startQuiz} className="btn-primary flex-1">
               <i className="fas fa-brain mr-2"></i>
               {progress.quizScore > 0 ? `Retake Quiz (${progress.quizScore}%)` : 'Take Quiz'}
             </button>
