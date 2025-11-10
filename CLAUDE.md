@@ -16,6 +16,8 @@ This is **Dr. Lutfiya Miller's AI Consulting Playbook** - an interactive learnin
 - `npm run deploy` - Build and deploy to Cloudflare Pages (runs build + wrangler pages deploy)
 - `npm run cf-typegen` - Generate Cloudflare TypeScript types
 
+**Note**: No lint, test, or typecheck commands are configured in package.json
+
 ### Process Management (PM2)
 - `pm2 start ecosystem.config.cjs` - Start the application
 - `pm2 restart ai-playbook` - Restart the application
@@ -28,11 +30,12 @@ This is **Dr. Lutfiya Miller's AI Consulting Playbook** - an interactive learnin
 - **Frontend**: React 19 + TypeScript/JavaScript (mixed) + Vite 6
 - **Styling**: Tailwind CSS 3.4 with custom theme (navy/silver palette) 
 - **State Management**: React hooks + LocalStorage + Context (ThemeContext)
-- **Backend**: Hono framework (minimal setup)
+- **Backend**: Hono framework (minimal setup, configured for SSR in tsconfig.json)
 - **Deployment**: Cloudflare Pages (wrangler) + PM2 for local hosting
 - **Content**: Markdown-style formatting in JavaScript modules
 - **Build Tools**: Vite with React plugin, PostCSS, Autoprefixer
 - **Video**: Loom integration for chapter videos
+- **TypeScript**: Configured with strict mode, ESNext target, Hono JSX source
 
 ### Core Data Flow
 1. Chapter metadata defined in `src/data/chapters.js` (titles, overviews, exercises, quizzes)
@@ -148,6 +151,8 @@ export const fullChapterContent = {
    - AI Coach contextual responses
    - Focus mode toggle
 3. `npm run build && npm run preview` - Test production build
+
+**Note**: No automated test suite is configured. Manual testing is the current approach.
 
 ## Deployment
 
