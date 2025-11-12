@@ -601,6 +601,112 @@ export const chaptersData = [
         points: 200
       }
     ]
+  },
+  {
+    id: 15,
+    number: "15",
+    title: "The B2B Goldmine Community Play",
+    subtitle: "Building Sticky Ecosystems That Print Money",
+    icon: "fa-users",
+    color: "from-purple-700 to-purple-500",
+    duration: "33 min",
+    videoUrl: "https://www.loom.com/share/4fbe7cc87e4c453085933db596f6dbc0",
+    keyTakeaways: [
+      "Why 7-10 person communities beat 700-person course graveyards",
+      "The upsell/downsell ladder that prevents client churn",
+      "Retainer Light: $99/month vs $2K/month positioning psychology",
+      "The 4 hacks to build your B2B funnel ecosystem"
+    ],
+    overview: "Transform your consulting business from a leaky bucket into a fortified ecosystem where you never truly lose a client—you just downsell them, nurture them, and re-ascend them later.",
+    sections: [
+      {
+        title: "The $10,000-a-Month Secret",
+        content: "Why B2C AI communities are failing and the intimate B2B model that's printing money."
+      },
+      {
+        title: "The Ecosystem Play",
+        content: "Ending the one-night stand client relationship with the upsell/downsell ladder."
+      },
+      {
+        title: "Four Funnel Hacks",
+        content: "Calendly routing, reciprocity effects, QR codes, and the sawdust strategy."
+      },
+      {
+        title: "Retainer Light Design",
+        content: "Pricing psychology and the tiered ascension model that keeps clients hooked."
+      },
+      {
+        title: "The 90-Day Goldmine Roadmap",
+        content: "Phase-by-phase implementation plan with scripts for every scenario."
+      }
+    ],
+    exercises: [
+      {
+        type: "assessment",
+        title: "Community Platform Audit",
+        description: "Evaluate existing B2C communities and design your B2B alternative",
+        points: 150
+      },
+      {
+        type: "strategy",
+        title: "Ecosystem Funnel Design",
+        description: "Map out your complete upsell/downsell ladder with pricing tiers",
+        points: 200
+      },
+      {
+        type: "writing",
+        title: "Script Library Creation",
+        description: "Write scripts for discovery calls, audits, and community transitions",
+        points: 175
+      }
+    ],
+    quiz: [
+      {
+        question: "What is the main problem with 700-person B2C AI communities?",
+        options: [
+          "Too expensive to maintain",
+          "Impossible to scale intimacy and high churn rates",
+          "Not enough content to fill",
+          "Too hard to market"
+        ],
+        correct: 1,
+        explanation: "The core issue is that intimacy cannot be scaled to 700+ people, leading to high churn. Knowledge is also becoming commoditized, and the market is saturated with disappointing experiences."
+      },
+      {
+        question: "What is 'Retainer Light' in the B2B community model?",
+        options: [
+          "A reduced-scope consulting package",
+          "$99/month fractionalized access as a downsell protection",
+          "A free trial of consulting services",
+          "A group coaching program"
+        ],
+        correct: 1,
+        explanation: "Retainer Light is a $99/month tier that provides fractionalized access to your expertise, serving as downsell protection to keep clients in your ecosystem when they can't afford full retainers."
+      },
+      {
+        question: "What is the 'Sawdust Strategy' for community content?",
+        options: [
+          "Recycling old content into new formats",
+          "Recording yourself doing client work and sharing artifacts as community value",
+          "Breaking down complex topics into simple pieces",
+          "Using AI to generate community posts"
+        ],
+        correct: 1,
+        explanation: "The Sawdust Strategy involves recording yourself doing actual paid client work and sharing those artifacts (the 'sawdust') with your community, providing zero-effort content that also builds a course library."
+      },
+      {
+        question: "How does the Calendly routing hack capture 'almost' clients?",
+        options: [
+          "By automatically booking them into cheaper calls",
+          "By tracking who visits but doesn't book due to price, then offering Retainer Light",
+          "By sending follow-up emails to all visitors",
+          "By reducing prices for hesitant prospects"
+        ],
+        correct: 1,
+        explanation: "The hack involves checking the 'responses' tab in Calendly to see who 'did not schedule an event when presented with the booking page' (usually due to price), then personally offering them the $99/month Retainer Light community as an alternative."
+      }
+    ],
+    reflection: "How can you transform your current client relationships from transactional 'one-night stands' into a sticky ecosystem? What would your three-tier community structure look like, and what specific value would you provide at each level to justify the psychological pricing shifts from 'a couple cups of coffee per month' to VIP retainer status?"
   }
 ];
 

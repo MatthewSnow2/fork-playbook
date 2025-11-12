@@ -1,7 +1,103 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { getChapterProgress } from '../data/chapters';
+import { loadUserProgress, getCurrentUserId } from '../utils/storage';
 
 const Dashboard = ({ chapters, onChapterSelect, progress, points }) => {
+  const [recentActivities, setRecentActivities] = useState([]);
+
+  // Load recent activities on mount and when progress changes
+  useEffect(() => {
+    const userId = getCurrentUserId();
+    if (userId) {
+      const userProgress = loadUserProgress(userId);
+      if (userProgress) {
+        const activities = getRecentActivities(userProgress, chapters);
+        setRecentActivities(activities);
+      }
+    }
+  }, [progress, points, chapters]);
+
+  // Function to get recent activities from user progress
+  const getRecentActivities = (userProgress, chapters) => {
+    const activities = [];
+
+    // Add completed chapters
+    userProgress.chaptersProgress?.forEach(cp => {
+      if (cp.status === 'completed' && cp.completedAt) {
+        const chapter = chapters.find(ch => ch.id === cp.chapterNumber);
+        if (chapter) {
+          activities.push({
+            type: 'chapter',
+            title: `Completed "${chapter.title}"`,
+            timestamp: cp.completedAt,
+            icon: 'fa-trophy',
+            iconColor: 'text-yellow-500',
+            points: 200
+          });
+        }
+      }
+    });
+
+    // Add completed exercises
+    userProgress.exercisesCompleted?.forEach(exercise => {
+      const chapter = chapters.find(ch => ch.id.toString() === exercise.chapterId.replace('chapter-', ''));
+      if (chapter) {
+        activities.push({
+          type: 'exercise',
+          title: `Finished "${exercise.exerciseId}"`,
+          timestamp: exercise.completedAt,
+          icon: 'fa-check-circle',
+          iconColor: 'text-green-500',
+          points: 150
+        });
+      }
+    });
+
+    // Add quiz results
+    userProgress.quizResults?.forEach(quiz => {
+      const chapter = chapters.find(ch => ch.id.toString() === quiz.chapterId.replace('chapter-', ''));
+      if (chapter && quiz.score === quiz.totalQuestions) {
+        activities.push({
+          type: 'quiz',
+          title: `Perfect score on "${chapter.title}" quiz`,
+          timestamp: quiz.attemptedAt,
+          icon: 'fa-medal',
+          iconColor: 'text-purple-500',
+          points: 100
+        });
+      }
+    });
+
+    // Add achievements
+    userProgress.achievements?.forEach(achievement => {
+      activities.push({
+        type: 'achievement',
+        title: `Earned "${achievement.title}" achievement`,
+        timestamp: achievement.earnedAt,
+        icon: 'fa-star',
+        iconColor: 'text-blue-500',
+        points: 0
+      });
+    });
+
+    // Sort by timestamp (most recent first) and take only the last 5
+    return activities
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      .slice(0, 5);
+  };
+
+  // Format timestamp to relative time
+  const formatRelativeTime = (timestamp) => {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diffInSeconds = Math.floor((now - time) / 1000);
+    
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    return time.toLocaleDateString();
+  };
   const getBadgeInfo = (points) => {
     if (points >= 2000) return { name: 'Master Consultant', icon: 'fa-crown', color: 'text-yellow-500' };
     if (points >= 1000) return { name: 'Senior Consultant', icon: 'fa-medal', color: 'text-purple-500' };
@@ -174,33 +270,33 @@ const Dashboard = ({ chapters, onChapterSelect, progress, points }) => {
 
       {/* Recent Activity */}
       <div className="mt-12">
-        <h3 className="text-2xl font-bold text-navy-800 mb-6">Recent Activity</h3>
+        <h3 className="text-2xl font-bold text-navy-800 dark:text-white mb-6">Recent Activity</h3>
         <div className="card">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-4 pb-4 border-b border-silver-200">
-              <i className="fas fa-trophy text-yellow-500"></i>
-              <div className="flex-1">
-                <p className="font-semibold">Completed "The Art of the Discovery Call"</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">2 hours ago</p>
-              </div>
-              <span className="text-green-500 font-semibold">+150 pts</span>
+          {recentActivities.length > 0 ? (
+            <div className="space-y-4">
+              {recentActivities.map((activity, index) => (
+                <div 
+                  key={`${activity.type}-${activity.timestamp}-${index}`}
+                  className={`flex items-center space-x-4 ${index < recentActivities.length - 1 ? 'pb-4 border-b border-silver-200 dark:border-gray-600' : ''}`}
+                >
+                  <i className={`fas ${activity.icon} ${activity.iconColor} text-xl`}></i>
+                  <div className="flex-1">
+                    <p className="font-semibold text-navy-900 dark:text-white">{activity.title}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{formatRelativeTime(activity.timestamp)}</p>
+                  </div>
+                  {activity.points > 0 && (
+                    <span className="text-green-500 font-semibold">+{activity.points} pts</span>
+                  )}
+                </div>
+              ))}
             </div>
-            <div className="flex items-center space-x-4 pb-4 border-b border-silver-200">
-              <i className="fas fa-check-circle text-green-500"></i>
-              <div className="flex-1">
-                <p className="font-semibold">Finished Client Readiness Exercise</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Yesterday</p>
-              </div>
-              <span className="text-green-500 font-semibold">+100 pts</span>
+          ) : (
+            <div className="text-center py-8">
+              <i className="fas fa-clock text-4xl text-gray-300 dark:text-gray-600 mb-4"></i>
+              <p className="text-gray-600 dark:text-gray-400 mb-2">No recent activity</p>
+              <p className="text-sm text-gray-500 dark:text-gray-500">Complete a chapter or exercise to see your progress here!</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <i className="fas fa-book text-blue-500"></i>
-              <div className="flex-1">
-                <p className="font-semibold">Started Chapter 3: Reading the Room</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">2 days ago</p>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

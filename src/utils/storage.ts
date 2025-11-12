@@ -98,7 +98,7 @@ export const initializeUserProgress = (userName: string): UserProgress => {
     userName,
     startedAt: now,
     lastActiveAt: now,
-    chaptersProgress: Array.from({ length: 14 }, (_, i) => ({
+    chaptersProgress: Array.from({ length: 15 }, (_, i) => ({
       chapterId: `chapter-${i + 1}`,
       chapterNumber: i + 1,
       status: 'not-started',
@@ -301,7 +301,7 @@ const checkForAchievements = (
         });
       }
       
-      if (completedCount === 7 && !hasAchievement(achievements, 'halfway')) {
+      if (completedCount === 8 && !hasAchievement(achievements, 'halfway')) {
         progress.achievements.push({
           id: 'halfway',
           type: 'chapter-complete',
@@ -313,12 +313,12 @@ const checkForAchievements = (
         });
       }
       
-      if (completedCount === 14 && !hasAchievement(achievements, 'master')) {
+      if (completedCount === 15 && !hasAchievement(achievements, 'master')) {
         progress.achievements.push({
           id: 'master',
           type: 'chapter-complete',
           title: 'AI Consulting Master',
-          description: 'Completed all 14 chapters',
+          description: 'Completed all 15 chapters',
           earnedAt: now,
           icon: '👑',
           rarity: 'legendary'
@@ -435,7 +435,7 @@ export const importProgress = (jsonData: string): boolean => {
 // Calculate overall progress
 export const calculateOverallProgress = (progress: UserProgress): number => {
   const completedChapters = progress.chaptersProgress.filter(cp => cp.status === 'completed').length;
-  return Math.round((completedChapters / 14) * 100);
+  return Math.round((completedChapters / 15) * 100);
 };
 
 // Get learning insights

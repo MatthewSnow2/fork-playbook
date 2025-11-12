@@ -10,9 +10,9 @@ This is **Dr. Lutfiya Miller's AI Consulting Playbook** - an interactive learnin
 
 ### Essential Commands
 - `npm install` - Install dependencies
-- `npm run dev` - Start development server on http://localhost:3000
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally (uses wrangler pages dev)
+- `npm run dev` - Start development server on http://localhost:3000 (Vite dev server)
+- `npm run build` - Build for production (Vite build)
+- `npm run preview` - Preview production build locally (wrangler pages dev)
 - `npm run deploy` - Build and deploy to Cloudflare Pages (runs build + wrangler pages deploy)
 - `npm run cf-typegen` - Generate Cloudflare TypeScript types
 
@@ -27,15 +27,14 @@ This is **Dr. Lutfiya Miller's AI Consulting Playbook** - an interactive learnin
 ## Architecture Overview
 
 ### Tech Stack
-- **Frontend**: React 19 + TypeScript/JavaScript (mixed) + Vite 6
-- **Styling**: Tailwind CSS 3.4 with custom theme (navy/silver palette) 
+- **Frontend**: React 19.2.0 + TypeScript/JavaScript (mixed) + Vite 6.4.1
+- **Styling**: Tailwind CSS 3.4.18 with custom theme (navy/silver palette) 
 - **State Management**: React hooks + LocalStorage + Context (ThemeContext)
-- **Backend**: Hono framework (minimal setup, configured for SSR in tsconfig.json)
-- **Deployment**: Cloudflare Pages (wrangler) + PM2 for local hosting
+- **Backend**: Hono 4.10.4 framework (minimal setup)
+- **Deployment**: Cloudflare Pages (wrangler 4.4.0) + PM2 for local hosting
 - **Content**: Markdown-style formatting in JavaScript modules
 - **Build Tools**: Vite with React plugin, PostCSS, Autoprefixer
 - **Video**: Loom integration for chapter videos
-- **TypeScript**: Configured with strict mode, ESNext target, Hono JSX source
 
 ### Core Data Flow
 1. Chapter metadata defined in `src/data/chapters.js` (titles, overviews, exercises, quizzes)
@@ -68,12 +67,12 @@ Content rendering supports:
 
 ## Content Integration Workflow
 
-### Primary Task: Complete Remaining Chapter Content
-The main development focus is migrating remaining content from `/content/*.docx` files into `src/data/fullChapters.js`.
+### Content Management System
+The platform uses a dual-layer content architecture for structured learning delivery.
 
 **Current Status**:
-- Chapters 1-11: ✅ Fully integrated (comprehensive content with video URLs)  
-- Chapters 12-14: ⏳ Awaiting content extraction from `/content/*.docx` files
+- Chapters 1-14: ✅ Fully integrated (comprehensive content with video URLs)
+- All chapters have complete content extracted from source documents
 
 **Content Structure**:
 ```javascript
@@ -158,9 +157,10 @@ export const fullChapterContent = {
 
 ### Local Hosting
 - Uses PM2 for process management (`ecosystem.config.cjs`)
-- Serves on port 3000 with host 0.0.0.0
+- Serves on port 3000 with host 0.0.0.0 for sandbox compatibility
 - Command: `pm2 start ecosystem.config.cjs`
 - Preview mode runs via `npx vite preview --host 0.0.0.0 --port 3000`
+- Vite config includes specific allowedHosts for sandbox deployment
 
 ### Cloudflare Pages
 - Configuration in `wrangler.jsonc`
@@ -211,4 +211,4 @@ export const fullChapterContent = {
 **Maintainer**: Dr. Lutfiya Miller, Ph.D., DABT  
 **Framework**: React 19 + Vite 6 + Tailwind CSS 3.4  
 **Last Updated**: November 2025  
-**Recent Progress**: Chapters 1-11 fully integrated (as of latest commits)
+**Recent Progress**: All chapters 1-14 fully integrated with complete content (as of latest commits)
