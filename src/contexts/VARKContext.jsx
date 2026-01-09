@@ -47,7 +47,12 @@ export const VARKProvider = ({ children }) => {
       return;
     }
     if (preference.primaryStyle !== null) {
-      localStorage.setItem(VARK_STORAGE_KEY, JSON.stringify(preference));
+      try {
+        localStorage.setItem(VARK_STORAGE_KEY, JSON.stringify(preference));
+      } catch (error) {
+        // Handle quota exceeded or permission errors gracefully
+        console.warn('Failed to save VARK preference to localStorage:', error.message);
+      }
     }
   }, [preference, isLoaded]);
 

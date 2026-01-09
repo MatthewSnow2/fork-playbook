@@ -106,8 +106,7 @@ The platform retains all original AI Consulting Playbook features:
 - 💾 Local storage for progress persistence
 
 ## URLs
-- **Live Application**: https://3000-ipxioi0x16zdyte00malr-d0b9e1e2.sandbox.novita.ai/
-- **GitHub Repository**: https://github.com/Drfiya/Playbook
+- **GitHub Repository**: https://github.com/MatthewSnow2/fork-playbook
 
 ## Core Features
 
@@ -232,68 +231,92 @@ The platform retains all original AI Consulting Playbook features:
 4. **Mastery** (Chapters 12-14): Becoming irreplaceable and scaling
 
 ## Technical Stack
-- **Frontend**: React 18 + TypeScript
-- **Styling**: Tailwind CSS with custom theme
-- **Build Tool**: Vite
-- **State Management**: React hooks + Local Storage
+- **Frontend**: React 19 + JavaScript/TypeScript
+- **Styling**: Tailwind CSS 3.4 with custom theme
+- **Build Tool**: Vite 6.4
+- **State Management**: React hooks + Context + LocalStorage
+- **Testing**: Vitest + Testing Library
 - **Icons**: Font Awesome 6
-- **Deployment**: PM2 process manager
+- **CLI**: Commander + Anthropic SDK
+- **Deployment**: Cloudflare Pages / PM2
+
+## Testing
+
+```bash
+# Run all tests
+npm test
+
+# Watch mode (re-run on changes)
+npm run test:watch
+
+# Interactive browser UI
+npm run test:ui
+
+# Coverage report
+npm run test:coverage
+```
+
+**Current Coverage:**
+- Schema validators: 86.5%
+- VARK helpers: 93.5%
 
 ## Deployment
-- **Platform**: Local development server
-- **Status**: ✅ Active
-- **Tech Stack**: React + Vite + Tailwind CSS
-- **Last Updated**: November 2024
+- **Platform**: Cloudflare Pages / Local dev server
+- **Status**: ✅ Active (Phase 6 - Integration & Testing)
+- **Tech Stack**: React 19 + Vite 6 + Tailwind CSS 3.4
+- **Last Updated**: January 2026
 
 ## Currently Completed Features ✅
-- Full 14-chapter content structure with data model
-- **Rich text content system** with markdown-style formatting
-- **Chapter 1 complete** with full extracted content (6 detailed sections)
-- Interactive dashboard with progress visualization  
+- **Full 14-chapter content** with rich text formatting
+- **AI Curriculum Generator** - Generate curricula for any topic
+- **VARK Learning Style Adaptation** - 4 style variants per section
+- **12-question VARK Assessment** - Identify your learning style
+- **Style Selector** - Manual override for learning preference
+- **CLI + MCP Tools** - Command line and Claude Desktop integration
+- Interactive dashboard with progress visualization
 - Chapter view with multi-section navigation
 - Exercise system with 3 types of activities
 - Quiz functionality with scoring
-- Progress tracking with local storage persistence
+- Progress tracking with localStorage persistence
 - AI Coach virtual assistant
 - Achievement/badge system
+- Dark mode support
 - Focus mode for distraction-free learning
 - Responsive design for all devices
 - Note-taking capability per chapter
-- **Content formatting**: Bold, italic, headers, lists, callouts, checklists
+- **Test suite** with 47 tests (Vitest)
 
 ## Features Not Yet Implemented 🚧
-- **Full content for Chapters 2-14** (structure ready, needs DOCX extraction)
 - PDF export functionality
 - Keyboard shortcuts
-- Dark mode toggle
 - Search across all content
 - Bookmarking system
-- Social sharing of achievements
 - Certificate generation
 - Backend API for cloud sync
 - Mobile app version
-- Collaborative learning features
 
 ## Recommended Next Steps 📋
-1. **Complete Chapter Content**: Extract and format full content for Chapters 2-14 (see `CONTENT_UPDATE_GUIDE.md`)
-2. **Content Enhancement**: Add tables, diagrams, and visual elements from original documents
-3. **Backend Integration**: Build API for user accounts and cloud progress sync
-4. **Advanced Analytics**: Track learning patterns and provide personalized recommendations
-5. **Community Features**: Add discussion forums or peer learning
-6. **Mobile Optimization**: Create PWA or native mobile apps
-7. **Certification System**: Implement formal certification upon course completion
-8. **Content Updates**: Regular updates with new AI consulting trends
-9. **Integration**: Connect with real consulting tools and platforms
+1. **Generate Custom Curricula**: Use the CLI to create curricula for your specific topics
+2. **Backend Integration**: Build API for user accounts and cloud progress sync
+3. **Advanced Analytics**: Track learning patterns and personalized recommendations
+4. **Community Features**: Discussion forums or peer learning
+5. **Mobile Optimization**: Create PWA or native mobile apps
+6. **Certification System**: Formal certification upon course completion
 
-### How to Add More Content
+### Generating Custom Content
 
-The app is designed to easily accept full chapter content. See **`CONTENT_UPDATE_GUIDE.md`** for:
-- Step-by-step instructions for adding chapter content
-- Formatting guidelines for rich text
-- Content structure examples
-- Testing procedures
+```bash
+# Generate a new curriculum
+node cli/index.js generate-curriculum "Your Topic" --chapters 5
 
-**Current Status**: Chapter 1 has full content (6 sections, ~13KB). Chapters 2-14 need content extraction from DOCX files.
+# Adapt for VARK learning styles
+node cli/index.js adapt-vark ./generated/fullChapters.js
+
+# Copy to app
+cp ./generated/*.js ./src/data/
+```
+
+See `BLUEPRINT.md` for detailed implementation phases.
 
 ## Installation & Setup
 
@@ -321,17 +344,22 @@ pm2 start ecosystem.config.cjs
 - Current configuration supports: `3000-ipxioi0x16zdyte00malr-d0b9e1e2.sandbox.novita.ai`
 
 ## Environment Variables
-Currently no environment variables required. Future versions may need:
-- `VITE_API_URL` - Backend API endpoint
-- `VITE_AUTH_TOKEN` - Authentication token
-- `VITE_ANALYTICS_ID` - Analytics tracking ID
+
+```bash
+# Required for curriculum generation (CLI/MCP)
+ANTHROPIC_API_KEY=sk-ant-...  # Your Claude API key
+```
+
+See `.env.example` for template.
 
 ## Contributing
-This is an educational platform designed to help consultants master AI consulting skills. Contributions for content improvements and feature enhancements are welcome.
+This is an educational platform designed to help learners master any topic with personalized content. Contributions for content improvements and feature enhancements are welcome.
 
 ## License
-Proprietary - All rights reserved
+MIT - Open source, community-driven
 
 ---
 
-**Built with ❤️ for AI Consultants**
+**Original Playbook**: Dr. Lutfiya Miller's AI Consulting Playbook
+**Remix By**: Matthew Snow / Me, Myself Plus AI LLC
+**Built with Claude Code**
