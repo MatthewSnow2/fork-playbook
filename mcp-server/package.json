@@ -1,0 +1,26 @@
+{
+  "name": "adaptive-learning-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for AI curriculum generation with VARK adaptation",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "adaptive-learning-mcp": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "mcp",
+    "claude",
+    "curriculum",
+    "vark",
+    "adaptive-learning"
+  ],
+  "author": "Me, Myself Plus AI LLC",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@anthropic-ai/sdk": "^0.30.0"
+  }
+}

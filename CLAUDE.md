@@ -4,7 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is **Dr. Lutfiya Miller's AI Consulting Playbook** - an interactive learning platform that transforms 14 chapters of AI consulting wisdom into an immersive self-paced learning experience. Each chapter combines written content, exercises, quizzes, reflections, and an AI mentor.
+This is **Adaptive Learning Remix** - a fork of Dr. Lutfiya Miller's AI Consulting Playbook, extended to be a self-hosted AI curriculum generator with VARK-based learning style adaptation.
+
+**Original**: Interactive learning platform with 14 chapters of AI consulting content.
+**Extension**: CLI/MCP tools to generate custom curricula for any topic with automatic VARK adaptation.
+
+### Key Differentiators
+- **Self-hosted**: Users provide their own Claude API keys (no hosted service)
+- **CLI + MCP**: Both command-line and MCP server interfaces
+- **VARK Adaptation**: Content transforms to 4 learning styles (Visual, Auditory, Read/Write, Kinesthetic)
+- **Open-source**: Forkable, community-driven
+
+### Build Status
+See `BLUEPRINT.md` for phase tracking and checkboxes.
 
 ## Development Commands
 
@@ -17,6 +29,28 @@ This is **Dr. Lutfiya Miller's AI Consulting Playbook** - an interactive learnin
 - `npm run cf-typegen` - Generate Cloudflare TypeScript types
 
 **Note**: No lint, test, or typecheck commands are configured in package.json
+
+### CLI Commands (Adaptive Learning Remix)
+```bash
+# Generate complete curriculum from topic
+node cli/index.js generate-curriculum "Topic Name" --chapters 10 --difficulty intermediate
+
+# Adapt content for VARK learning styles
+node cli/index.js adapt-vark ./generated/fullChapters.js
+
+# Dry run (estimate cost without generating)
+node cli/index.js generate-curriculum "Topic Name" --dry-run
+```
+
+### MCP Server
+```bash
+# Start MCP server (for Claude Desktop integration)
+node mcp-server/index.js
+```
+
+**MCP Tools**:
+- `generate_curriculum` - Generate complete learning curriculum from topic
+- `adapt_vark` - Transform curriculum into 4 VARK learning style variants
 
 ### Process Management (PM2)
 - `pm2 start ecosystem.config.cjs` - Start the application
@@ -97,20 +131,58 @@ export const fullChapterContent = {
 ## File Structure
 
 ```
+├── cli/                        # CLI for curriculum generation (Adaptive Learning Remix)
+│   ├── index.js               # Commander entry point
+│   ├── commands/
+│   │   ├── generate-curriculum.js
+│   │   └── adapt-vark.js
+│   └── lib/
+│       ├── claude-client.js   # Anthropic API wrapper with retry
+│       ├── prompts/
+│       │   ├── curriculum-prompt.js
+│       │   └── vark-prompts.js
+│       └── validators/
+│           └── schema-validator.js
+├── mcp-server/                 # MCP server for Claude Desktop integration
+│   ├── index.js
+│   ├── tools/
+│   │   ├── generate-curriculum.js
+│   │   └── adapt-vark.js
+│   └── package.json
+├── generated/                  # Output directory for generated curricula
+│   ├── chapters.js
+│   ├── fullChapters.js
+│   ├── adaptive-fullChapters.js
+│   └── metadata.json
+├── docs/                       # Specification documents
+│   ├── CURRICULUM-STRUCTURE.md # Generator input/output spec
+│   ├── VARK-ADAPTATION.md      # VARK transformation rules
+│   ├── FRONTEND-COMPONENTS.md  # Component specifications
+│   └── IMPLEMENTATION-GUIDE.md # Build order guide
 ├── content/                    # Source DOCX/PDF files (14 chapters)
 ├── src/
+│   ├── contexts/
+│   │   ├── ThemeContext.jsx   # Dark/light theme
+│   │   └── VARKContext.jsx    # Learning style preference (Adaptive)
 │   ├── data/
 │   │   ├── chapters.js        # Chapter metadata and structure
 │   │   ├── fullChapters.js    # Complete chapter content
+│   │   ├── adaptive-fullChapters.js  # VARK-adapted content (generated)
+│   │   ├── vark-questions.js  # VARK assessment questions
 │   │   └── chapters.ts        # TypeScript type definitions
-│   ├── components/            # React components
+│   ├── components/
+│   │   ├── adaptive/          # Adaptive Learning components
+│   │   │   ├── VARKAssessment.jsx
+│   │   │   ├── StyleSelector.jsx
+│   │   │   └── AdaptiveContentRenderer.jsx
 │   │   ├── ChapterContent.jsx # Markdown-style content renderer
 │   │   ├── ChapterView.jsx    # Individual chapter display
 │   │   ├── Dashboard.jsx      # Chapter overview and progress
 │   │   └── ProgressTracker.jsx # Sidebar navigation and progress
 │   ├── utils/
 │   │   ├── storage.ts         # LocalStorage progress tracking
-│   │   └── aiCoach.ts         # AI Coach functionality
+│   │   ├── aiCoach.ts         # AI Coach functionality
+│   │   └── varkHelpers.js     # VARK scoring utilities
 │   └── App.jsx               # Main application shell
 ├── public/static/            # Static assets
 ├── package.json              # Dependencies and scripts
@@ -118,6 +190,7 @@ export const fullChapterContent = {
 ├── tailwind.config.js       # Tailwind customization
 ├── wrangler.jsonc           # Cloudflare Pages configuration
 ├── ecosystem.config.cjs     # PM2 process configuration
+├── BLUEPRINT.md             # Phase tracking for ralph-loop
 ├── CONTENT_UPDATE_GUIDE.md  # Detailed content formatting guide
 └── GITHUB_WORKFLOW.md       # GitHub workflow documentation
 ```
@@ -169,19 +242,45 @@ export const fullChapterContent = {
 - Supports nodejs compatibility flags
 - Vite config includes allowed hosts for sandbox deployment
 
+## Adaptive Learning Remix Features
+
+### VARK Learning Styles
+| Style | Code | Content Adaptation |
+|-------|------|-------------------|
+| Visual | V | ASCII diagrams, tables, flowcharts, spatial layouts |
+| Auditory | A | Conversational tone, discussion prompts, stories |
+| Read/Write | R | Definitions, bulleted lists, note templates |
+| Kinesthetic | K | Hands-on exercises, "try this now", step-by-step |
+
+### Curriculum Generator
+- **Input**: Topic string + options (chapters, difficulty, duration)
+- **Output**: `chapters.js` + `fullChapters.js` matching existing schema
+- **Cost**: ~$0.50-1.50 per curriculum (user's API key)
+
+### VARK Adapter
+- **Input**: Generated `fullChapters.js`
+- **Output**: `adaptive-fullChapters.js` with 5 variants per chapter
+- **Strategy**: 4-in-1 API call for cost optimization (~$1.50-3.00 per curriculum)
+
+### Frontend Components
+- **VARKContext**: Learning style preference state (follows ThemeContext pattern)
+- **VARKAssessment**: 12-question assessment (~3 min completion)
+- **StyleSelector**: V/A/R/K toggle for manual override
+- **AdaptiveContentRenderer**: Renders style-appropriate content with fallback
+
 ## Future Enhancements
 
-### Planned Features
+### Remaining Original Features
 - Dark mode toggle (ThemeContext already implemented, needs UI toggle)
 - Search across all chapters
 - Bookmarking system for sections
 - PDF export functionality
-- Content automation scripts for DOCX ingestion
 
-### Content Pipeline
-- Consider building automated DOCX → fullChapters.js conversion
-- Potential script location: `/scripts/syncContent.js`
-- Integration with build process for content updates
+### Adaptive Learning Roadmap
+- Multiple curriculum support (curriculum switching)
+- Progress sync across devices (optional backend)
+- Community curriculum sharing
+- Additional learning style models (beyond VARK)
 
 ## Common Development Tasks
 
@@ -204,11 +303,29 @@ export const fullChapterContent = {
 - Consider lazy loading for large content sections
 - Monitor bundle size as content grows
 
+## Specification Documents
+
+| Document | Purpose |
+|----------|---------|
+| `docs/CURRICULUM-STRUCTURE.md` | Generator input/output schemas, markdown rules |
+| `docs/VARK-ADAPTATION.md` | Style transformation rules, prompt templates |
+| `docs/FRONTEND-COMPONENTS.md` | Component props, state, integration points |
+| `docs/IMPLEMENTATION-GUIDE.md` | Step-by-step build order with checkpoints |
+| `BLUEPRINT.md` | Phase tracking for ralph-loop implementation |
+
+## Environment Variables
+
+```bash
+# Required for curriculum generation
+ANTHROPIC_API_KEY=sk-ant-...  # User provides own key
+```
+
 ---
 
-**Repository**: https://github.com/Drfiya/Playbook  
-**Live Application**: https://3000-ipxioi0x16zdyte00malr-d0b9e1e2.sandbox.novita.ai/  
-**Maintainer**: Dr. Lutfiya Miller, Ph.D., DABT  
-**Framework**: React 19 + Vite 6 + Tailwind CSS 3.4  
-**Last Updated**: November 2025  
-**Recent Progress**: All chapters 1-14 fully integrated with complete content (as of latest commits)
+**Original Project**: Dr. Lutfiya Miller's AI Consulting Playbook
+**Remix By**: Matthew Snow / Me, Myself Plus AI LLC
+**Framework**: React 19 + Vite 6 + Tailwind CSS 3.4 + Hono
+**CLI Stack**: Node.js + Commander + @anthropic-ai/sdk
+**License**: MIT (open-source, community contribution)
+**Last Updated**: January 2026
+**Build Status**: See `BLUEPRINT.md` for current phase

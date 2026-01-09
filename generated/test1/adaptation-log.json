@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-01-09T03:00:36.102Z",
+  "inputFile": "./generated/test1/fullChapters.js",
+  "chaptersProcessed": [
+    1
+  ],
+  "sectionsProcessed": 5,
+  "errors": [],
+  "generationTime": "576.4s"
+}

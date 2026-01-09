@@ -3,8 +3,29 @@ import { getChapterProgress, updateChapterProgress } from '../data/chapters';
 import fullChapterContent from '../data/fullChapters';
 import ChapterContent from './ChapterContent';
 import LoomVideoPlayer from './LoomVideoPlayer';
+import { useVARK } from '../contexts/VARKContext';
+import { StyleSelector, AdaptiveContentRenderer } from './adaptive';
 
 const ChapterView = ({ chapter, onComplete, onBack }) => {
+  // Adaptive content state - loaded dynamically (may not exist)
+  const [adaptiveFullChapterContent, setAdaptiveFullChapterContent] = useState(null);
+
+  // Load adaptive content on mount (optional file, may not exist)
+  useEffect(() => {
+    import('../data/adaptive-fullChapters')
+      .then((module) => {
+        setAdaptiveFullChapterContent(module.adaptiveFullChapterContent || module.default);
+      })
+      .catch(() => {
+        // Adaptive content not available - this is expected if not generated yet
+        if (import.meta.env?.DEV) {
+          console.debug('Adaptive content not loaded (file may not exist yet)');
+        }
+      });
+  }, []);
+  // VARK learning style context
+  const { preference, setLearningStyle, openAssessmentModal } = useVARK();
+
   // Get initial progress and clean up any inconsistent data
   const getCleanProgress = () => {
     const storedProgress = getChapterProgress(chapter.id);
@@ -330,7 +351,17 @@ const ChapterView = ({ chapter, onComplete, onBack }) => {
 
         {/* Sections */}
         <div className="card mb-8">
-          <h3 className="text-xl font-bold text-navy-800 dark:text-white mb-6">Chapter Content</h3>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-navy-800 dark:text-white">Chapter Content</h3>
+            {/* VARK Style Selector */}
+            <StyleSelector
+              currentStyle={preference.primaryStyle}
+              onStyleChange={setLearningStyle}
+              showAssessmentPrompt={!preference.assessmentCompleted}
+              onTakeAssessment={openAssessmentModal}
+              compact={true}
+            />
+          </div>
           
           {/* Section Navigation */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
@@ -366,7 +397,19 @@ const ChapterView = ({ chapter, onComplete, onBack }) => {
                 <h4 className="text-2xl font-bold text-navy-800 dark:text-white mb-6 pb-4 border-b-2 border-navy-200 dark:border-gray-600">
                   {fullChapterContent[chapter.id].sections[currentSection].title}
                 </h4>
-                <ChapterContent content={fullChapterContent[chapter.id].sections[currentSection].content} />
+                {/* Use AdaptiveContentRenderer if adaptive content exists and style is selected */}
+                {adaptiveFullChapterContent?.[chapter.id] && preference.primaryStyle ? (
+                  <AdaptiveContentRenderer
+                    chapterId={chapter.id}
+                    sectionIndex={currentSection}
+                    style={preference.primaryStyle}
+                    adaptiveContent={adaptiveFullChapterContent[chapter.id]}
+                    defaultContent={fullChapterContent[chapter.id]?.sections}
+                    fallbackContent={fullChapterContent[chapter.id].sections[currentSection].content}
+                  />
+                ) : (
+                  <ChapterContent content={fullChapterContent[chapter.id].sections[currentSection].content} />
+                )}
               </>
             ) : (
               <>

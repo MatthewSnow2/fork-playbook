@@ -6,6 +6,8 @@ import ProgressTracker from './components/ProgressTracker';
 import AICoach from './components/AICoach';
 import Navigation from './components/Navigation';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { VARKProvider, useVARK } from './contexts/VARKContext';
+import { VARKAssessment } from './components/adaptive';
 import './index.css';
 
 function App() {
@@ -57,7 +59,6 @@ function App() {
   };
 
   return (
-    <ThemeProvider>
       <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors ${focusMode ? 'focus-mode' : ''}`}>
         <Navigation 
           currentView={currentView}
@@ -116,15 +117,46 @@ function App() {
       </div>
 
       {!focusMode && (
-        <AICoach 
+        <AICoach
           isVisible={showCoach}
           onToggle={() => setShowCoach(!showCoach)}
           currentChapter={selectedChapter}
         />
       )}
       </div>
+  );
+}
+
+/**
+ * VARK Assessment Modal Component
+ * Rendered inside VARKProvider to access context
+ */
+function VARKAssessmentModal() {
+  const { isAssessmentModalOpen, closeAssessmentModal, completeAssessment } = useVARK();
+
+  if (!isAssessmentModalOpen) return null;
+
+  return (
+    <VARKAssessment
+      isModal={true}
+      onComplete={completeAssessment}
+      onSkip={closeAssessmentModal}
+    />
+  );
+}
+
+/**
+ * Main App with providers
+ */
+function AppWithProviders() {
+  return (
+    <ThemeProvider>
+      <VARKProvider>
+        <App />
+        <VARKAssessmentModal />
+      </VARKProvider>
     </ThemeProvider>
   );
 }
 
-export default App;
+export default AppWithProviders;

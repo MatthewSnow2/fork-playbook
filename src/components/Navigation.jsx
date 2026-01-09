@@ -1,9 +1,15 @@
 import React from 'react';
 import { chaptersData, getChapterProgress, getOverallProgress, getTotalPoints } from '../data/chapters';
 import { useTheme } from '../contexts/ThemeContext';
+import { useVARK } from '../contexts/VARKContext';
+import { styleConfig } from '../data/vark-questions';
 
 const Navigation = ({ currentView, onNavigate, onBack, focusMode, onToggleFocus }) => {
   const { isDark, toggleTheme } = useTheme();
+  const { preference, openAssessmentModal } = useVARK();
+
+  // Get current style config
+  const currentStyleConfig = preference.primaryStyle ? styleConfig[preference.primaryStyle] : null;
   
   const handleExportProgress = () => {
     try {
@@ -79,6 +85,22 @@ const Navigation = ({ currentView, onNavigate, onBack, focusMode, onToggleFocus 
             >
               <i className={`fas ${isDark ? 'fa-sun' : 'fa-moon'}`}></i>
               <span className="text-sm">{isDark ? 'Light' : 'Dark'}</span>
+            </button>
+
+            {/* VARK Learning Style Button */}
+            <button
+              onClick={openAssessmentModal}
+              className={`px-3 py-1 rounded-lg transition-colors flex items-center space-x-2 ${
+                currentStyleConfig
+                  ? `${currentStyleConfig.bgColor} ${currentStyleConfig.textColor}`
+                  : 'bg-navy-700 dark:bg-gray-700 hover:bg-navy-600 dark:hover:bg-gray-600'
+              }`}
+              title="Learning Style Settings"
+            >
+              <i className={`fas ${currentStyleConfig ? currentStyleConfig.icon : 'fa-brain'}`}></i>
+              <span className="text-sm hidden md:inline">
+                {currentStyleConfig ? currentStyleConfig.name : 'Set Style'}
+              </span>
             </button>
 
             <button

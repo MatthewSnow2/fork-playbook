@@ -1,17 +1,109 @@
-# AI Consulting Playbook - Interactive Learning Platform
+# Adaptive Learning Remix
 
-## Project Overview
-- **Name**: AI Consulting Playbook
-- **Goal**: Transform 14 chapters of AI consulting wisdom into an immersive, interactive learning experience
-- **Features**: 
-  - 📚 14 comprehensive chapters with structured learning paths
-  - 🎯 Interactive exercises and quizzes
-  - 📊 Progress tracking with gamification
-  - 🤖 AI Coach virtual mentor
-  - 📝 Note-taking and reflection tools
-  - 🏆 Achievement system with points and badges
-  - 📱 Responsive design with focus mode
-  - 💾 Local storage for progress persistence
+A self-hosted AI curriculum generator with VARK-based learning style adaptation, built on top of the AI Consulting Playbook platform.
+
+## What's New: Adaptive Learning Features
+
+### AI Curriculum Generation
+Generate complete learning curricula for **any topic** using the Claude API:
+- Multi-chapter curriculum with exercises, quizzes, and reflections
+- Automatic section structuring and content organization
+- Cost estimate: ~$0.50-1.50 per 10-chapter curriculum
+
+### VARK Learning Style Adaptation
+Transform content into 4 learning style variants:
+- **Visual**: ASCII diagrams, tables, flowcharts, spatial layouts
+- **Auditory**: Conversational tone, discussion prompts, stories
+- **Read/Write**: Definitions, bulleted lists, note templates
+- **Kinesthetic**: Hands-on exercises, "try this now", step-by-step
+
+### Learning Style Assessment
+12-question assessment to identify your dominant learning style, with:
+- Progress indicator and navigation
+- Results with percentage breakdown
+- Style-specific learning tips
+- Manual style override option
+
+---
+
+## Quick Start: Generate Your First Curriculum
+
+```bash
+# 1. Clone and install
+git clone [repository-url]
+cd Playbook
+npm install
+
+# 2. Set your API key
+cp .env.example .env
+# Edit .env and add your ANTHROPIC_API_KEY
+
+# 3. Generate a curriculum
+node cli/index.js generate-curriculum "Python Machine Learning" --chapters 5
+
+# 4. Adapt for learning styles
+node cli/index.js adapt-vark ./generated/fullChapters.js
+
+# 5. Copy to app and run
+cp ./generated/chapters.js ./src/data/
+cp ./generated/adaptive-fullChapters.js ./src/data/
+npm run dev
+```
+
+---
+
+## CLI Commands
+
+### Generate Curriculum
+```bash
+node cli/index.js generate-curriculum <topic> [options]
+
+Options:
+  --chapters <number>   Number of chapters (default: 10)
+  --difficulty <level>  beginner | intermediate | advanced (default: intermediate)
+  --duration <minutes>  Minutes per chapter (default: 45)
+  --output <path>       Output directory (default: ./generated)
+  --dry-run             Estimate cost without generating
+```
+
+### Adapt for VARK
+```bash
+node cli/index.js adapt-vark <input-file> [options]
+
+Options:
+  --output <path>       Output file path
+  --chapter <id>        Adapt single chapter only
+  --styles <list>       Comma-separated: visual,auditory,readWrite,kinesthetic
+```
+
+---
+
+## MCP Server Integration
+
+The project includes an MCP server for Claude Desktop integration:
+
+```bash
+# Start MCP server
+node mcp-server/index.js
+```
+
+**Tools:**
+- `generate_curriculum` - Generate complete learning curriculum
+- `adapt_vark` - Transform content into VARK variants
+
+---
+
+## Original Features
+
+The platform retains all original AI Consulting Playbook features:
+- 📚 14 comprehensive chapters with structured learning paths
+- 🎯 Interactive exercises and quizzes
+- 📊 Progress tracking with gamification
+- 🤖 AI Coach virtual mentor
+- 📝 Note-taking and reflection tools
+- 🏆 Achievement system with points and badges
+- 📱 Responsive design with focus mode
+- 💾 Local storage for progress persistence
 
 ## URLs
 - **Live Application**: https://3000-ipxioi0x16zdyte00malr-d0b9e1e2.sandbox.novita.ai/

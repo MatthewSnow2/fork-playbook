@@ -1,0 +1,15 @@
+{
+  "topic": "Python Fundamentals",
+  "chapters": 3,
+  "difficulty": "beginner",
+  "duration": 45,
+  "generatedAt": "2026-01-09T02:43:25.855Z",
+  "estimatedTokens": {
+    "inputTokens": 700,
+    "outputTokens": 24900,
+    "totalTokens": 25600
+  },
+  "generationTime": "208.0s",
+  "successCount": 3,
+  "errorCount": 0
+}
