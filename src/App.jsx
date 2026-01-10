@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { chaptersData, getOverallProgress, getTotalPoints } from './data/chapters';
+import { getOverallProgress, getTotalPoints } from './data/chapters';
 import Dashboard from './components/Dashboard';
 import ChapterView from './components/ChapterView';
 import ProgressTracker from './components/ProgressTracker';
@@ -7,10 +7,14 @@ import AICoach from './components/AICoach';
 import Navigation from './components/Navigation';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { VARKProvider, useVARK } from './contexts/VARKContext';
+import { CurriculumProvider, useCurriculum } from './contexts/CurriculumContext';
 import { VARKAssessment } from './components/adaptive';
+import { CurriculumManager } from './components/curriculum';
+import SettingsModal from './components/settings/SettingsModal';
 import './index.css';
 
 function App() {
+  const { chaptersData, isLoading } = useCurriculum();
   const [currentView, setCurrentView] = useState('dashboard');
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [overallProgress, setOverallProgress] = useState(0);
@@ -23,6 +27,11 @@ function App() {
     setOverallProgress(getOverallProgress());
     setTotalPoints(getTotalPoints());
   }, [currentView]);
+
+  // Handle navigation to curricula view
+  const handleNavigateToCurricula = () => {
+    setCurrentView('curricula');
+  };
 
   const handleChapterSelect = (chapter) => {
     setSelectedChapter(chapter);
@@ -58,12 +67,25 @@ function App() {
     document.addEventListener('mouseup', handleMouseUp);
   };
 
+  // Show loading state while curriculum is loading
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <i className="fas fa-circle-notch fa-spin text-4xl text-navy-500 mb-4"></i>
+          <p className="text-gray-500 dark:text-gray-400">Loading curriculum...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
       <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors ${focusMode ? 'focus-mode' : ''}`}>
-        <Navigation 
+        <Navigation
           currentView={currentView}
           onNavigate={setCurrentView}
           onBack={handleBackToDashboard}
+          onNavigateToCurricula={handleNavigateToCurricula}
           focusMode={focusMode}
           onToggleFocus={() => setFocusMode(!focusMode)}
         />
@@ -107,9 +129,15 @@ function App() {
           )}
 
           {currentView === 'chapter' && selectedChapter && (
-            <ChapterView 
+            <ChapterView
               chapter={selectedChapter}
               onComplete={updateProgress}
+              onBack={handleBackToDashboard}
+            />
+          )}
+
+          {currentView === 'curricula' && (
+            <CurriculumManager
               onBack={handleBackToDashboard}
             />
           )}
@@ -151,10 +179,13 @@ function VARKAssessmentModal() {
 function AppWithProviders() {
   return (
     <ThemeProvider>
-      <VARKProvider>
-        <App />
-        <VARKAssessmentModal />
-      </VARKProvider>
+      <CurriculumProvider>
+        <VARKProvider>
+          <App />
+          <VARKAssessmentModal />
+          <SettingsModal />
+        </VARKProvider>
+      </CurriculumProvider>
     </ThemeProvider>
   );
 }
