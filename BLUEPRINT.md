@@ -1,7 +1,7 @@
 # Adaptive Learning Remix - Implementation Blueprint
 
 **Project Status**: ACTIVE - RALPH-LOOP BUILD
-**Last Updated**: 2026-01-09
+**Last Updated**: 2026-01-10
 **Approach**: Self-hosted curriculum generator with VARK adaptation
 
 ---
@@ -23,10 +23,10 @@ Transform Playbook into a self-hosted AI curriculum generator that creates perso
 ## Phase Overview
 
 ```
-Phase 1 ──> Phase 2 ──> Phase 3 ──> Phase 4 ──> Phase 5 ──> Phase 6
-   │           │           │           │           │           │
- Docs       CLI+MCP    Curriculum   VARK      Frontend   Integration
-           Infra      Generator   Adapter   Components   & Testing
+Phase 1 ──> Phase 2 ──> Phase 3 ──> Phase 4 ──> Phase 5 ──> Phase 6 ──> Phase 7
+   │           │           │           │           │           │           │
+ Docs       CLI+MCP    Curriculum   VARK      Frontend   Integration   Browser
+           Infra      Generator   Adapter   Components   & Testing   Gen UI
 ```
 
 ---
@@ -345,6 +345,86 @@ npm run dev
 
 ---
 
+## PHASE 7: Browser Generation UI [ COMPLETE ]
+**Goal**: Enable curriculum generation directly from the browser
+
+### Tasks
+- [x] Create CurriculumContext for state management
+- [x] Create curriculumStorage.js (IndexedDB wrapper via idb-keyval)
+- [x] Create anthropicClient.js (browser fetch wrapper with CORS)
+- [x] Create SettingsModal with API key management
+- [x] Create ApiKeyInput with validation
+- [x] Create GenerationWizard with cost estimation
+- [x] Create GenerationProgress with phase indicators
+- [x] Create CurriculumManager view
+- [x] Create CurriculumCard component
+- [x] Create CurriculumSwitcher dropdown
+- [x] Integrate CurriculumProvider in App.jsx
+- [x] Add settings button to Navigation
+- [x] Add curricula view to App routing
+
+### Implementation Notes
+- Uses direct fetch to Anthropic API with `anthropic-dangerous-direct-browser-access` header
+- IndexedDB stores generated curricula (localStorage too small for large content)
+- CurriculumContext provides chaptersData and fullChapterContent to all components
+- Switching curricula is seamless - components re-render automatically
+- Cost estimation shown before generation (~$0.50-1.50 per curriculum)
+
+### Key Files
+```
+src/
+├── contexts/
+│   └── CurriculumContext.jsx      # Curriculum state + API key management
+├── components/
+│   ├── settings/
+│   │   ├── SettingsModal.jsx      # API key + preferences modal
+│   │   └── ApiKeyInput.jsx        # Secure key entry with validation
+│   └── curriculum/
+│       ├── CurriculumManager.jsx  # Full curriculum list view
+│       ├── CurriculumCard.jsx     # Individual curriculum display
+│       ├── CurriculumSwitcher.jsx # Navigation dropdown
+│       ├── GenerationWizard.jsx   # Topic input + options form
+│       ├── GenerationProgress.jsx # Progress during generation
+│       └── index.js
+└── utils/
+    ├── curriculumStorage.js       # IndexedDB operations
+    └── anthropicClient.js         # Browser-compatible API client
+```
+
+### Success Criteria
+- [x] Settings modal opens from navigation gear icon
+- [x] API key validates with test request
+- [x] Cost estimate displays before generation
+- [x] Generation shows progress (outline phase, content per chapter)
+- [x] Generated curriculum can be activated immediately
+- [x] Curriculum switcher allows switching between curricula
+- [x] Generated curricula persist in IndexedDB
+- [x] Import/export curricula as JSON
+
+### Architecture Decisions
+| Decision | Rationale |
+|----------|-----------|
+| Direct fetch vs SDK | Anthropic SDK is Node.js only; browser needs fetch with CORS header |
+| IndexedDB vs localStorage | localStorage 5-10MB limit; curricula can be 500KB-2MB each |
+| Settings modal vs view | Quick access for API key; full view for curriculum management |
+| CurriculumContext | Follows established VARKContext pattern; enables seamless switching |
+
+### Validation
+```bash
+npm run build
+# ✓ built in 5.46s
+# No errors
+
+npm run dev
+# 1. Click gear icon → Settings modal opens
+# 2. Enter API key → Test validates successfully
+# 3. Click curriculum dropdown → "Manage Curricula"
+# 4. Click "Generate New" → Enter topic → Generate
+# 5. Activate → Content switches to new curriculum
+```
+
+---
+
 ## Dependencies
 
 ### npm packages to add
@@ -355,7 +435,8 @@ npm run dev
   "@anthropic-ai/sdk": "^0.30.0",
   "chalk": "^5.0.0",
   "ora": "^7.0.0",
-  "@modelcontextprotocol/sdk": "^1.0.0"
+  "@modelcontextprotocol/sdk": "^1.0.0",
+  "idb-keyval": "^6.2.0"
 }
 ```
 
@@ -386,7 +467,11 @@ ANTHROPIC_API_KEY=sk-ant-...  # User provides
 | `src/data/fullChapters.js` | Content structure reference |
 | `src/components/ChapterContent.jsx` | Markdown renderer (supported syntax) |
 | `src/contexts/ThemeContext.jsx` | Pattern for VARKContext |
+| `src/contexts/VARKContext.jsx` | Learning style preferences |
+| `src/contexts/CurriculumContext.jsx` | Curriculum state + API key management |
 | `src/components/ChapterView.jsx` | Integration point |
+| `src/utils/curriculumStorage.js` | IndexedDB operations for curricula |
+| `src/utils/anthropicClient.js` | Browser-compatible Anthropic API client |
 
 ---
 
@@ -398,6 +483,7 @@ ANTHROPIC_API_KEY=sk-ant-...  # User provides
 
 ---
 
-**Blueprint Version**: 2.0 (Adaptive Learning Remix)
+**Blueprint Version**: 2.1 (Browser Generation UI)
 **Created**: 2026-01-09
-**Status**: ACTIVE BUILD
+**Updated**: 2026-01-10
+**Status**: ACTIVE BUILD - Phase 7 Complete
